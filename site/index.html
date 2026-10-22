@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Final Night</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Fonts load in the background so a slow phone connection never blocks the page. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div>
+        <h1>Final Night</h1>
+        <p class="sub">Asian Games · Men's cricket gold · T20</p>
+      </div>
+    </div>
+    <div class="top-right">
+      <span id="livePill" class="pill pill-off">Off air</span>
+      <span id="connPill" class="pill pill-off">Connecting…</span>
+    </div>
+  </header>
+
+  <section class="scoreboard" id="scoreboard" aria-live="polite">
+    <div class="score-main" id="scoreMain">Waiting for the scoreboard…</div>
+    <div class="score-detail" id="scoreDetail" hidden></div>
+    <div class="score-meta" id="scoreMeta"></div>
+  </section>
+
+  <main class="layout">
+    <section class="stage-col">
+      <div class="stage" id="stage">
+        <video id="video" playsinline autoplay></video>
+        <div class="stage-empty" id="stageEmpty">
+          <p class="stage-title" id="stageTitle">Waiting for the host to go live</p>
+          <p class="stage-hint" id="stageHint">The stream starts here as soon as it's shared.</p>
+        </div>
+        <button class="unmute" id="unmuteBtn" hidden>Tap for sound</button>
+        <div class="float-layer" id="floatLayer" aria-hidden="true"></div>
+      </div>
+
+      <div class="bar">
+        <div class="reactions" id="reactions"></div>
+        <button class="btn btn-ghost" id="fullscreenBtn" type="button">Fullscreen</button>
+      </div>
+      <div class="celebrate-row">
+        <span class="celebrate-label">India moment</span>
+        <button class="celeb-btn" type="button" data-kind="four">Four</button>
+        <button class="celeb-btn" type="button" data-kind="six">Six</button>
+        <button class="celeb-btn" type="button" data-kind="wicket">Wicket</button>
+        <button class="celeb-btn celeb-gold" type="button" data-kind="win">Gold!</button>
+      </div>
+      <p class="stats" id="stats"></p>
+
+      <div class="host-panel" id="hostPanel" hidden>
+        <button class="btn btn-primary" id="shareBtn" type="button">Share screen</button>
+        <button class="btn btn-ghost" id="stopBtn" type="button" hidden>Stop sharing</button>
+        <form class="sync" id="syncForm" autocomplete="off">
+          <label for="syncInput">Scoreboard delay (s)</label>
+          <input id="syncInput" type="number" min="0" max="180" inputmode="numeric">
+          <button class="btn btn-ghost" type="submit">Set</button>
+        </form>
+        <span class="host-note" id="hostNote">Pick the Willow TV tab and tick “Share tab audio”.</span>
+        <div class="host-link" id="hostLink"></div>
+      </div>
+    </section>
+
+    <aside class="side">
+      <div class="leaderboard">
+        <h2>Leaderboard</h2>
+        <ol class="board" id="board"></ol>
+        <p class="pred-note">+1 for every exact over guess and every correct match pick.</p>
+      </div>
+      <div class="call">
+        <h2>Call</h2>
+        <div class="call-actions">
+          <button class="btn btn-primary" id="voiceBtn" type="button">Join voice</button>
+          <button class="btn btn-ghost" id="camJoinBtn" type="button">Join with camera</button>
+          <button class="btn btn-ghost" id="muteBtn" type="button" hidden>Mute</button>
+          <button class="btn btn-ghost" id="camBtn" type="button" hidden>Camera off</button>
+          <button class="btn btn-ghost" id="leaveBtn" type="button" hidden>Leave call</button>
+        </div>
+        <div class="tiles" id="tiles"></div>
+      </div>
+      <div class="prematch" id="prematch">
+        <h2>Match picks</h2>
+        <p class="pred-note" id="preStatus"></p>
+        <button class="btn btn-primary" type="button" id="preOpenBtn">Make my picks</button>
+        <ul class="pre-list" id="preList"></ul>
+        <button class="btn btn-ghost" type="button" id="preLockBtn" hidden>Lock picks now</button>
+      </div>
+      <div class="predict" id="predict">
+        <h2>Predict the over</h2>
+        <p class="pred-q" id="predQ">No over open yet.</p>
+        <form class="pred-form" id="predForm" autocomplete="off" hidden>
+          <input id="predInput" type="number" min="0" max="40" inputmode="numeric" placeholder="Runs" aria-label="Your runs guess">
+          <button class="btn btn-primary" type="submit" id="predSubmit">Guess</button>
+        </form>
+        <p class="pred-note" id="predNote"></p>
+        <ul class="pred-guesses" id="predGuesses"></ul>
+        <div class="pred-host" id="predHost" hidden>
+          <input id="predOver" type="number" min="1" max="20" inputmode="numeric" aria-label="Over number">
+          <button class="btn btn-ghost" type="button" id="predHostBtn">Open over</button>
+        </div>
+      </div>
+      <div class="people">
+        <h2>Here <span id="peopleCount" class="count">0</span></h2>
+        <ul id="peopleList"></ul>
+      </div>
+      <div class="chat">
+        <h2>Chat</h2>
+        <ol id="chatLog" class="chat-log"></ol>
+        <form id="chatForm" class="chat-form" autocomplete="off">
+          <input id="chatInput" maxlength="300" placeholder="Say something…" aria-label="Chat message">
+          <button class="btn btn-primary" type="submit">Send</button>
+        </form>
+      </div>
+    </aside>
+  </main>
+
+  <div class="overlay" id="joinOverlay">
+    <form class="join-card" id="joinForm" autocomplete="off">
+      <p class="eyebrow" id="joinEyebrow">You're invited</p>
+      <h2 id="joinTitle">India's gold medal final</h2>
+      <label for="nameInput">Your name</label>
+      <input id="nameInput" maxlength="24" placeholder="e.g. Rahul" required>
+      <button class="btn btn-primary btn-big" type="submit" id="joinBtn">Join the party</button>
+    </form>
+  </div>
+
+  <div class="overlay" id="preOverlay" hidden>
+    <form class="join-card pre-card" id="preForm" autocomplete="off">
+      <p class="eyebrow">Before the first ball</p>
+      <h2>Your match picks</h2>
+      <p class="pred-note">Only correct picks score. Picks lock at kickoff, and nobody sees yours until then.</p>
+      <div class="pre-questions" id="preQuestions"></div>
+      <button class="btn btn-primary btn-big" type="submit">Save my picks</button>
+      <button class="btn btn-ghost" type="button" id="preSkipBtn">Later</button>
+    </form>
+  </div>
+
+  <div class="board-strip" id="boardStrip" aria-hidden="true"></div>
+  <div class="toasts" id="toasts" aria-hidden="true"></div>
+  <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+  <div class="banner" id="banner" hidden>
+    <span class="banner-text" id="bannerText"></span>
+    <span class="banner-sub" id="bannerSub"></span>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
