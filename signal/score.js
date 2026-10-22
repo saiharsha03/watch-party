@@ -1,8 +1,10 @@
 const CRICKETDATA_API = 'https://api.cricapi.com/v1';
 const CRICINFO_RSS = 'https://static.cricinfo.com/rss/livescores.xml';
 
-// Two sources, same output shape: { name, status, innings: [{ label, r, w, o }], ended, fetchedAt }.
-//   cricinfo-rss (default): ESPNcricinfo's public live-scores feed, refreshed every ~30 s, no key; runs + wickets, no overs.
+// Three sources, same output shape: { name, status, innings: [{ label, r, w, o }], ended, fetchedAt }.
+//   cricbuzz (default): Cricbuzz's match JSON (CRICBUZZ_MATCH_ID), every ~12 s; overs, batters, bowler, run rates.
+//   cricinfo-rss: ESPNcricinfo's public live-scores feed, refreshed every ~30 s, no key; runs + wickets, no overs.
+//     Also the fallback after 5 Cricbuzz failures in a row.
 //   cricketdata: CricketData.org API (needs a key, free = 100 calls/day); includes overs but polls every ~2.5 min.
 let delayMs = Math.max(0, Number(process.env.SCORE_DELAY_SECONDS ?? 20)) * 1000;
 // Host's "sync" control: hold score updates back so they line up with the stream.
